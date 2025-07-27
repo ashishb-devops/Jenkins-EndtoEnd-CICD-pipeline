@@ -3,6 +3,8 @@
 ![Screenshot 2023-03-28 at 9 38 09 PM](https://user-images.githubusercontent.com/43399466/228301952-abc02ca2-9942-4a67-8293-f76647b6f9d8.png)
 
 ## ✅ Summary:
+This is a simple Sprint Boot based Java application that can be built using Maven. Sprint Boot dependencies are handled using the pom.xml 
+at the root directory of the repository.
 
 In this project, CI part is handled by Jenkins, CD part is handled by Argo CD. Once the development team develops a java application, we will go head and trigger the jenkins pipeline, which will checkout the code from configured git repo. After that build and test of the application is done using Maven (For build and test purpose used a separate docker image which is build using JRE 17 and maven), Static code Analysis is done by SonarQube (configured locally on EC2 instance). Docker image is stored in personal Docker Hub registry, which will used as docker agent in pipeline. Once the static code analysis is done, application image will be built and uploaded to Docker hub. This ends our CI part.
 
@@ -55,14 +57,24 @@ Steps:
          4.6: Add credentials: sonarqube, docker-cred, and github.
          4.7: Set SONAR_URL in the pipeline environment to your SonarQube server endpoint
          4.8: Argo CD should track the repo path spring-boot-app-manifests. Once the image tag is updated and committed, Argo CD will automatically deploy the latest version..
+         
+    5. Set up Sonar server locally on EC2 instance
+            sudo apt update && sudo apt install unzip -y
+            adduser sonarqube
+            wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.4.1.88267.zip
+            unzip *
+            chown -R sonarqube:sonarqube /opt/sonarqube
+            chmod -R 775 /opt/sonarqube
+            cd /opt/sonarqube/bin/linux-x86-64
+            ./sonar.sh start
 
-    5. Set up Argo CD:
-        5.1: Install Argo CD Operator on the minikube Kubernetes cluster.
-        5.2: Set up a Git repository for Argo CD to track the changes in application manifests.
-        5.3: Set up Argo CD yaml file.
+    6. Set up Argo CD:
+        6.1: Install Argo CD Operator on the minikube Kubernetes cluster.
+        6.2: Set up a Git repository for Argo CD to track the changes in application manifests.
+        6.3: Set up Argo CD yaml file.
 
-    6. Run the Jenkins pipeline:
-       6.1 Trigger the Jenkins pipeline to start the CI/CD process for the Java application.
-       6.2 Monitor the pipeline stages and fix any issues that arise.
+    7. Run the Jenkins pipeline:
+       7.1 Trigger the Jenkins pipeline to start the CI/CD process for the Java application.
+       7.2 Monitor the pipeline stages and fix any issues that arise.
 
-This end-to-end Jenkins pipeline will automate the entire CI/CD process for a Java application, from code checkout to production deployment, using popular tools like SonarQube, Argo CD, and Kubernetes.
+This end-to-end Jenkins pipeline will automate the entire CI/CD process for a Java application, from code checkout to deployment, using popular tools like SonarQube, Argo CD, and Kubernetes.
