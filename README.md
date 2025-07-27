@@ -46,20 +46,20 @@ Steps:
        - Docker Build & Push: Tags image as yourusername/ultimate-cicd:${BUILD_NUMBER} and pushes to registry.
        - Deployment Update: Clones the same Git repo, modifies deployment.yml to use new tag, and pushes commit to main branch for Argo CD sync.
 
-    4. Configure Jenkins pipeline stages:
-        Stage 1: Use the Git plugin to check out the source code from the Git repository.
-        Stage 2: Use the Maven-Docker image as docker agent to build the Java application.
-        Stage 3: Use the SonarQube plugin to analyze the code quality of the Java application.
-        Stage 4: Use the Maven Integration plugin to package the application into a JAR file.
-        Stage 5: Use the Kubernetes Continuous Deploy plugin to deploy the application to a test environment using Helm.
-        Stage 6: Use a testing framework like Selenium to run user acceptance tests on the deployed application.
-        Stage 7: Use Argo CD to promote the application to a production environment.
+    4. Required Configuration:
+         4.1: Use the Git plugin to check out the source code from the Git repository.
+         4.2: Use the Maven-Docker image as docker agent to build the Java application.
+         4.3: Use the SonarQube plugin to analyze the code quality of the Java application.
+         4.4: Use the Maven to package the application into a JAR file.
+         4.5: Install Docker on the Jenkins host.
+         4.6: Add credentials: sonarqube, docker-cred, and github.
+         4.7: Set SONAR_URL in the pipeline environment to your SonarQube server endpoint
+         4.8: Argo CD should track the repo path spring-boot-app-manifests. Once the image tag is updated and committed, Argo CD will automatically deploy the latest version..
 
     5. Set up Argo CD:
-        Install Argo CD on the Kubernetes cluster.
-        Set up a Git repository for Argo CD to track the changes in the Helm charts and Kubernetes manifests.
-        Create a Helm chart for the Java application that includes the Kubernetes manifests and Helm values.
-        Add the Helm chart to the Git repository that Argo CD is tracking.
+        5.1: Install Argo CD Operator on the minikube Kubernetes cluster.
+        5.2: Set up a Git repository for Argo CD to track the changes in application manifests.
+        5.3: Set up Argo CD yaml file.
 
     6. Configure Jenkins pipeline to integrate with Argo CD:
        6.1 Add the Argo CD API token to Jenkins credentials.
